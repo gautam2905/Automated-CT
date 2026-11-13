@@ -5,7 +5,8 @@ contrast in the images registers a function first: `ctx.console.enhancement_at[s
 `enhancement_at` argument), where `fn(sim_time_s)` gives the added HU per compartment at that time.
 
 Stopping a scan. Before the sweep has finished, a stop puts the series back to "planned"; the part of the
-range already exposed is added to the dose total and logged. Once the sweep has finished the exposure cannot
+range already exposed is added to the dose total, logged, and listed on the dose record as an exposure of its
+own (`console.extra_exposures`), because no series row shows it. Once the sweep has finished the exposure cannot
 be undone: the series is done, its reconstructions are completed even if the step is stopped while they are
 being rebuilt, and the step is marked `committed` so that the stop completes it.
 """
@@ -217,6 +218,7 @@ def _count_stopped_sweep(ctx: CTContext, series_id: str) -> None:
         return
     delivered = series.plan.dlp_mgycm * series.scanned_fraction
     ctx.console.total_dlp_mgycm += delivered
+    ctx.console.list_exposure(series.label, f"stopped after {series.scanned_fraction:.0%} of its range", delivered)
     ctx.log.add("alert", f"{series.label}: the scan was stopped after {series.scanned_fraction:.0%} of its range; "
                          f"{delivered:.0f} mGy·cm was delivered and is added to the dose total")
 

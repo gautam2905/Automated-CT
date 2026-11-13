@@ -215,6 +215,12 @@ export interface TrackingSample {
 export interface DoseView {
   total_dlp_mgycm: number;
   alerts?: string[];
+  extra_exposures?: ExtraExposure[];
+}
+export interface ExtraExposure {
+  label: string;
+  what: string;
+  dlp_mgycm: number;
 }
 export interface ReferenceLine {
   name: string;

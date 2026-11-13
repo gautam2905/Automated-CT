@@ -86,10 +86,29 @@ def test_after_the_injection_done_steps_are_shown_as_not_repeatable_and_their_fi
     perform_until(session, pack, "arm_injector")
     st = steps(session.snapshot())
     assert all(st[s].repeatable and st[s].fields[-1].editable for s in REPEATABLE)
+    assert all(st[s].blocked_by == [] for s in REPEATABLE)
     perform_until(session, pack, "scan_delayed")
     st = steps(session.snapshot())
     assert not any(st[s].repeatable for s in REPEATABLE)
     assert not any(f.editable for s in REPEATABLE for f in st[s].fields)
+    # The card itself says why "Do again" is gone: its button is disabled, so no refusal would ever be seen.
+    for s in REPEATABLE:
+        assert st[s].status == "done" and len(st[s].blocked_by) == 1, s
+        assert "injection has started" in st[s].blocked_by[0], s
+    assert st["load_injector"].blocked_by == []                      # a step that never could be repeated says nothing
+
+
+def test_a_done_step_gives_no_reason_while_an_earlier_step_is_being_done_again(session, pack):
+    perform_until(session, pack, "set_landmark")
+    assert _set(session, "table_height", "height_mm", 860).ok
+    assert _perform(session, "table_height").ok
+    session.advance(0.1)
+    st = steps(session.snapshot())
+    assert st["table_height"].status == "running" and st["set_landmark"].status == "done"
+    assert st["set_landmark"].blocked_by == []            # it is not refused, only waiting its turn
+    session.run_until_idle()
+    st = steps(session.snapshot())
+    assert st["set_landmark"].status == "redo" and st["leave_room"].blocked_by == ['Do "Set landmark" first']
 
 
 def test_a_stopped_injection_refuses_earlier_repeats_and_the_exam_still_finishes(session, pack):

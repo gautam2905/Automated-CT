@@ -87,6 +87,7 @@ def test_the_seed_changes_the_set_up_and_the_same_seed_repeats_it(DATA):
     assert first == again and first[0] != other[0]
 
 
-def test_a_negative_seed_is_refused_by_name(DATA):
-    with pytest.raises(ValueError):
-        open_session(DATA, PROTOCOL_ID, "sub-000", seed=-1)
+@pytest.mark.parametrize("seed", [-1, 1.5, True, "7"])
+def test_a_seed_that_is_not_a_whole_number_from_0_up_is_refused_by_name(DATA, seed):
+    with pytest.raises(ValueError, match="The seed must be a whole number from 0 up"):
+        open_session(DATA, PROTOCOL_ID, "sub-000", seed=seed)

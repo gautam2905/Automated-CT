@@ -9,8 +9,8 @@ from typing import TYPE_CHECKING, Callable, Mapping, Optional
 from scansim.ct.acquisition import series_image
 from scansim.imaging import render
 from scansim.patient.pack import OutsideAnatomy
-from scansim.snapshot import (ConsoleView, DoseView, ReferenceLine, ReferencePoint, SeriesView, TopogramView,
-                              TrackingSample, TrackingView)
+from scansim.snapshot import (ConsoleView, DoseView, ExtraExposure, ReferenceLine, ReferencePoint, SeriesView,
+                              TopogramView, TrackingSample, TrackingView)
 
 if TYPE_CHECKING:
     from scansim.ct.context import CTContext
@@ -39,6 +39,7 @@ class ConsoleState:
         self.series: list[SeriesView] = []
         self.tracking: Optional[TrackingView] = None
         self.total_dlp_mgycm: float = 0.0
+        self.extra_exposures: list[ExtraExposure] = []      # in the total, but not the row of any series
         self.dose_alerts: list[str] = []
         self.enhancement_at: dict[str, EnhancementAt] = {}      # per series id; absent = no contrast
         self.tracking_enhancement_at: Optional[EnhancementAt] = None   # enhancement of the monitoring images
@@ -82,6 +83,12 @@ class ConsoleState:
     def replace_series(self, series: SeriesView) -> None:
         self.series = [series if s.id == series.id else s for s in self.series]
 
+    def list_exposure(self, label: str, what: str, dlp_mgycm: float) -> None:
+        """Keep an exposure on the dose record that no series row shows: a sweep stopped part-way, or a scan
+        that was done again. The caller sees to the total; the log shows only its last lines, so the list is
+        what lets the Dose tab add up."""
+        self.extra_exposures = [*self.extra_exposures, ExtraExposure(label=label, what=what, dlp_mgycm=dlp_mgycm)]
+
     def landmark_moved(self, shift_mm: float) -> None:
         """The landmark was set again: positions measured from the old one are `shift_mm` larger from the new.
 
@@ -118,7 +125,8 @@ class ConsoleState:
     def view(self, ctx: "CTContext") -> ConsoleView:
         return ConsoleView(
             topograms=list(self.topograms), series=list(self.series), tracking=self.tracking,
-            dose=DoseView(total_dlp_mgycm=self.total_dlp_mgycm, alerts=list(self.dose_alerts)),
+            dose=DoseView(total_dlp_mgycm=self.total_dlp_mgycm, alerts=list(self.dose_alerts),
+                          extra_exposures=list(self.extra_exposures)),
             reference=self._reference_lines(ctx) if ctx.show_reference else [],
             reference_points=self._reference_points(ctx) if ctx.show_reference else [])
 

@@ -1374,7 +1374,8 @@
     },
     "dose": {
       "total_dlp_mgycm": 1021.0,
-      "alerts": []
+      "alerts": [],
+      "extra_exposures": []
     },
     "reference": [],
     "reference_points": []

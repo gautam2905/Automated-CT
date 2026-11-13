@@ -84,6 +84,9 @@ def _send_images(ctx: CTContext, step: Step) -> None:
         if series.status == "done":
             step.add_result(series.label, f"CTDIvol {series.plan.ctdi_vol_mgy:.1f} mGy, "
                                           f"DLP {series.plan.dlp_mgycm:.0f} mGy·cm")
+    extra = ctx.console.extra_exposures
+    if extra:                 # stopped or repeated scans: in the total, but not among the series above
+        step.add_result("Also in the total", "; ".join(f"{e.label}, {e.what}: {e.dlp_mgycm:.0f} mGy·cm" for e in extra))
     step.add_result("Total DLP", f"{ctx.console.total_dlp_mgycm:.0f} mGy·cm")
 
 

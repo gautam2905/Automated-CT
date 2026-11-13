@@ -168,3 +168,73 @@ def test_an_arterial_sweep_stopped_part_way_counts_the_part_delivered(on_aorta):
     assert any("Arterial: the scan was stopped after" in e.text and "added to the dose total" in e.text
                for e in snap.log if e.kind == "alert")
     assert _series(s)["arterial"].status == "missed" and snap.console.tracking.state == "missed"
+    listed = snap.console.dose.extra_exposures                 # and it stays on the Dose tab, not only in the log
+    assert [(e.label, e.what.split(" after")[0]) for e in listed] == [("Arterial", "stopped")]
+    assert listed[0].dlp_mgycm == pytest.approx(planned * fraction, rel=0.02)
+
+
+# ---- the Dose table adds up: every exposure in the total is a row or a listed exposure ----
+
+def _dose(session):
+    """(sum of the rows of scanned series, the listed exposures, the total)."""
+    snap = session.snapshot()
+    rows = sum(x.plan.dlp_mgycm for x in snap.console.series if x.status == "done")
+    return rows, snap.console.dose.extra_exposures, snap.console.dose.total_dlp_mgycm
+
+
+def _stop_the_noncontrast_sweep_part_way(session):
+    assert session.dispatch({"type": "perform", "step_id": "scan_noncontrast"}).ok
+    assert _run_until(session, lambda snap: 0.2 < snap.console.series[0].scanned_fraction < 1)
+    delivered = _series(session)["noncontrast"].plan.dlp_mgycm * _series(session)["noncontrast"].scanned_fraction
+    assert session.dispatch({"type": "abort"}).ok
+    return delivered
+
+
+def test_a_stopped_sweep_is_listed_as_an_exposure_of_its_own(session, pack):
+    perform_until(session, pack, "confirm_settings")
+    delivered = _stop_the_noncontrast_sweep_part_way(session)
+    rows, listed, total = _dose(session)
+    assert rows == 0 and len(listed) == 1
+    assert listed[0].label == "Non-contrast" and listed[0].what.startswith("stopped after ")
+    assert listed[0].dlp_mgycm == pytest.approx(delivered, rel=0.02) and total == pytest.approx(listed[0].dlp_mgycm)
+
+
+def test_the_rows_and_the_listed_exposures_add_up_to_the_total_after_a_stop_and_a_repeat(session, pack):
+    """A sweep stopped part-way, then the scan; planned again and scanned again: three exposures, one row."""
+    perform_until(session, pack, "confirm_settings")
+    _stop_the_noncontrast_sweep_part_way(session)
+    do(session, "scan_noncontrast")
+    first = _series(session)["noncontrast"].plan.dlp_mgycm
+    assert _set(session, "plan_ranges", "noncontrast.end_mm", 250).ok
+    for step_id in ("plan_ranges", "confirm_settings", "scan_noncontrast"):
+        do(session, step_id)
+    rows, listed, total = _dose(session)
+    assert [e.label for e in listed] == ["Non-contrast", "Non-contrast"]
+    assert listed[0].what.startswith("stopped after ") and listed[1].what == "earlier scan, scanned again"
+    assert listed[1].dlp_mgycm == pytest.approx(first) and rows < first
+    assert rows + sum(e.dlp_mgycm for e in listed) == pytest.approx(total)
+    assert any("scanned again" in e.text and "stays in the dose total" in e.text for e in session.ctx.log.tail(2000))
+    perform_until(session, pack, "send_images")
+    rows, listed, total = _dose(session)
+    assert len(listed) == 2 and rows + sum(e.dlp_mgycm for e in listed) == pytest.approx(total)
+    sent = {r.label: r.value for r in steps(session.snapshot())["send_images"].results}
+    assert "stopped after" in sent["Also in the total"] and "earlier scan, scanned again" in sent["Also in the total"]
+
+
+def test_a_repeat_stopped_while_its_images_are_rebuilt_still_lists_the_scan_it_replaced(session, pack):
+    perform_until(session, pack, "review_noncontrast")
+    first = _series(session)["noncontrast"].plan.dlp_mgycm
+    do(session, "plan_ranges"); do(session, "confirm_settings")
+    assert session.dispatch({"type": "perform", "step_id": "scan_noncontrast"}).ok
+    assert _run_until(session, _reconstructing("noncontrast"))
+    assert session.dispatch({"type": "abort"}).ok
+    rows, listed, total = _dose(session)
+    assert [(e.label, e.what) for e in listed] == [("Non-contrast", "earlier scan, scanned again")]
+    assert listed[0].dlp_mgycm == pytest.approx(first) and rows + first == pytest.approx(total)
+
+
+def test_an_exam_without_stops_or_repeats_lists_no_extra_exposure(session, pack):
+    perform_until(session, pack, "send_images")
+    rows, listed, total = _dose(session)
+    assert listed == [] and rows == pytest.approx(total)
+    assert "Also in the total" not in {r.label for r in steps(session.snapshot())["send_images"].results}

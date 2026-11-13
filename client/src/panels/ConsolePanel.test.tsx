@@ -77,10 +77,26 @@ describe('DoseTab', () => {
     render(<DoseTab snapshot={sample} />)
     const note = screen.getByTestId('dose-note').textContent ?? ''
     expect(note).toBe(DOSE_NOTE)
-    for (const words of ['model estimate', 'assumed', 'topograms', 'bolus-monitoring scans', 'stopped part-way adds the part']) {
+    for (const words of ['model estimate', 'assumed', 'topograms', 'monitoring slice', 'bolus-monitoring scans', 'stopped part-way or scanned again', 'row of its own']) {
       expect(note).toContain(words)
     }
+    expect(note).not.toContain('log')   // the log shows only its last lines, so the Dose tab must not send the reader there
     expect(within(screen.getByText(/Total DLP/).parentElement!).getByText('assumed')).toBeTruthy()
+  })
+
+  test('an exposure that has no series row is listed, so the rows add up to the total', () => {
+    const extra_exposures = [
+      { label: 'Non-contrast', what: 'stopped after 31% of its range', dlp_mgycm: 98.44 },
+      { label: 'Non-contrast', what: 'earlier scan, scanned again', dlp_mgycm: 316 },
+    ]
+    const snap = load({ ...sample, console: { ...sample.console, dose: { total_dlp_mgycm: 1597.4, alerts: [], extra_exposures } } })
+    render(<DoseTab snapshot={snap} />)
+    const rows = within(screen.getByRole('table')).getAllByRole('row')
+    expect(rows).toHaveLength(1 + 4 + 2)
+    expect(rows[5].textContent).toContain('Non-contrast, stopped after 31% of its range')
+    expect(rows[5].textContent).toContain('98.4')
+    expect(rows[6].textContent).toContain('Non-contrast, earlier scan, scanned again')
+    expect(rows[6].textContent).toContain('316')
   })
 
   test('alerts are listed', () => {

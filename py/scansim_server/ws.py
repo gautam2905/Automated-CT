@@ -66,12 +66,12 @@ class Connection:
         problem = _check_start(message)
         if problem:
             return await self.send_error(problem)
-        await self.stop_session()
-        try:
+        try:                  # open the new exam before the running one is given up: a refusal changes nothing
             session = open_session(self.app["data_dir"], message["protocol_id"], message["patient_id"],
                                    seed=message.get("seed", 0), session_id=secrets.token_hex(8))
         except (ValueError, OSError) as err:
             return await self.send_error(str(err))
+        await self.stop_session()
         self.session = session
         self.app["sessions"][session.session_id] = session
         await self.send_snapshot(force=True)

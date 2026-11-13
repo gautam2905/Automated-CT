@@ -33,7 +33,7 @@ def test_a_subject_that_is_not_a_plain_name_is_refused_and_nothing_is_touched(to
     dataset, out = folders
     victim = tmp_path / "x"; victim.mkdir(); (victim / "keep.txt").write_text("keep")
     before = _files(tmp_path)
-    with pytest.raises(SystemExit, match="subject"):
+    with pytest.raises(SystemExit, match="is not a subject name"):     # not "subject": the test folder's name has it
         tool.main(["--subject", subject, "--dataset", str(dataset), "--out", str(out)])
     assert _files(tmp_path) == before and (victim / "keep.txt").read_text() == "keep"
 

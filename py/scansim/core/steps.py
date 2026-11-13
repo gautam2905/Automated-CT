@@ -203,14 +203,24 @@ class Workflow:
 
     def _view(self, step: Step) -> StepView:
         status = step.status
-        pending = status in ("locked", "redo")
         editable = self._editable(step)
         return StepView(
             id=step.id, stage_id=step.stage_id, title=step.title, actor=step.actor, place=step.place,
-            info=step.info, status=status, blocked_by=self._blockers(step) if pending else [],
+            info=step.info, status=status, blocked_by=self._reasons_shown(step, status),
             fields=[f.view(editable) for f in step.fields.values()], results=list(step.results),
             repeatable=step.repeatable and (status != "done" or self._can_repeat(step)),
             action_label=step.action_label)
+
+    def _reasons_shown(self, step: Step, status: str) -> list[str]:
+        """What the step's card says about why it cannot be performed. A step that cannot start yet says what it
+        waits for. A done step says why it may no longer be done again (its own `check`): its button is disabled,
+        so the refusal with the reason would otherwise never be seen. While it only waits for an earlier step
+        that is being done again it says nothing."""
+        if status in ("locked", "redo"):
+            return self._blockers(step)
+        if status == "done" and step.repeatable and step.check is not None and self._ctx is not None:
+            return list(step.check(self._ctx, step))
+        return []
 
     def _validate_references(self) -> None:
         for s in self._steps.values():

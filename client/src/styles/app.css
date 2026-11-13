@@ -28,13 +28,155 @@ body {
   height: 100vh;
 }
 
+/*
+ * Steps, handle, room, handle, console. Either side can be put away: its column closes and its handle becomes
+ * a rail. With one side away, the side that stays gets part of the freed width and the room gets the rest.
+ */
 .app__body {
+  --steps: minmax(320px, 26%);
+  --console: minmax(360px, 30%);
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(320px, 26%) 1fr minmax(360px, 30%);
-  gap: 12px;
+  grid-template-columns: var(--steps) auto 1fr auto var(--console);
   padding: 12px;
+}
+
+.app__body[data-steps='closed'] {
+  --steps: 0px;
+}
+
+.app__body[data-console='closed'] {
+  --console: 0px;
+}
+
+.app__body[data-steps='closed'][data-console='open'] {
+  --console: minmax(360px, 42%);
+}
+
+.app__body[data-console='closed'][data-steps='open'] {
+  --steps: minmax(320px, 34%);
+}
+
+/* Every part names its column, so a hidden side does not let the others slide over. */
+.app__side,
+.app__room {
+  grid-row: 1;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+}
+
+.app__side[hidden] {
+  display: none;
+}
+
+.app__side--steps {
+  grid-column: 1;
+}
+
+.app__room {
+  grid-column: 3;
+}
+
+.app__side--console {
+  grid-column: 5;
+}
+
+/* The bar between a side and the room: a slim handle while the side is open, a named rail when it is away. */
+.rail {
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 20px;
+  padding: 0;
+  font: inherit;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.rail--steps {
+  grid-column: 2;
+}
+
+.rail--console {
+  grid-column: 4;
+}
+
+.rail[aria-expanded='false'] {
+  width: 34px;
+  justify-content: flex-start;
+  padding-top: 12px;
+  background: var(--panel);
+  border-color: var(--line);
+  border-radius: 8px;
+}
+
+.rail--steps[aria-expanded='false'] {
+  margin-right: 12px;
+}
+
+.rail--console[aria-expanded='false'] {
+  margin-left: 12px;
+}
+
+/* The grip: a small tab in the middle of the handle, so the handle reads as something to press. */
+.rail__tab {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 56px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.rail[aria-expanded='false'] .rail__tab {
+  height: auto;
+  border: 0;
+  background: transparent;
+}
+
+.rail:hover {
+  color: var(--accent);
+}
+
+.rail:hover .rail__tab {
+  border-color: var(--accent);
+}
+
+.rail[aria-expanded='false']:hover {
+  border-color: var(--accent);
+}
+
+.rail:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  color: var(--accent);
+}
+
+.rail__arrow {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.rail__name {
+  writing-mode: vertical-rl;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .panel {
@@ -108,11 +250,6 @@ body {
   color: var(--alert);
 }
 
-.btn--danger {
-  border-color: var(--alert);
-  background: var(--alert);
-}
-
 .btn {
   font: inherit;
   padding: 6px 14px;
@@ -131,6 +268,12 @@ body {
 .btn--ghost {
   background: transparent;
   color: var(--accent);
+}
+
+/* After .btn, so that its colours win: the button that discards the exam must not look like "Start exam". */
+.btn--danger {
+  border-color: var(--alert);
+  background: var(--alert);
 }
 
 .topbar__conn {

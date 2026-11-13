@@ -213,6 +213,8 @@ def open_session(data_dir: Path, protocol_id: str, patient_id: str, seed: int = 
         raise ValueError(f"Unknown protocol {protocol_id!r}")
     if not _PATIENT_ID.fullmatch(patient_id) or not (data_dir / "patients" / patient_id).is_dir():
         raise ValueError(f"Unknown patient {patient_id!r}")
+    if isinstance(seed, bool) or not isinstance(seed, int) or seed < 0:
+        raise ValueError(f"The seed must be a whole number from 0 up, not {seed!r}")
     session_id = session_id or f"s{next(_session_numbers)}"
     pack = PatientPack.load(data_dir / "patients" / patient_id)
     record = make_record(pack, seed)

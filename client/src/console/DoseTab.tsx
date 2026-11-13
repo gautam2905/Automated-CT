@@ -4,9 +4,9 @@ const round = (v: number) => Math.round(v * 10) / 10
 
 /** What the total is and is not: said beside it, because the numbers alone look measured. */
 export const DOSE_NOTE =
-  'A model estimate: the scanner\u2019s dose calibration and its tube-current adaptation are assumed. The total ' +
-  'leaves out the topograms and the bolus-monitoring scans. A scan stopped part-way adds the part that was ' +
-  'delivered, which is listed in the log and not in the rows above.'
+  'A model estimate: the scanner’s dose calibration and its tube-current adaptation are assumed. The total ' +
+  'leaves out the topograms, the monitoring slice and the bolus-monitoring scans. A scan that was stopped ' +
+  'part-way or scanned again keeps what it delivered in the total, and has a row of its own above.'
 
 export default function DoseTab({ snapshot }: { snapshot: Snapshot }) {
   const { series = [], dose } = snapshot.console
@@ -35,6 +35,15 @@ export default function DoseTab({ snapshot }: { snapshot: Snapshot }) {
               </tr>
             )
           })}
+          {/* Exposures that no series row shows any more, so that the last column adds up to the total. */}
+          {(dose.extra_exposures ?? []).map((e, i) => (
+            <tr key={`extra-${i}`} className="dose-table__extra">
+              <td colSpan={4}>
+                {e.label}, {e.what}
+              </td>
+              <td>{round(e.dlp_mgycm)}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <p>

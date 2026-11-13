@@ -126,6 +126,7 @@
   inset: 0;
   height: 100%;
   touch-action: none;
+  user-select: none; /* a drag moves an edge; it must not select the labels */
 }
 
 .topogram__handle {
@@ -197,6 +198,12 @@
 .dose-table th:first-child,
 .dose-table td:first-child {
   text-align: left;
+}
+
+/* A stopped or repeated scan: in the total, but no longer the row of a series. */
+.dose-table__extra td {
+  color: var(--muted);
+  font-style: italic;
 }
 
 .log {

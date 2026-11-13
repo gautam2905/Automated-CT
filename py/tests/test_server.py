@@ -200,6 +200,23 @@ def test_bad_start_is_an_error_and_opens_nothing(client, app, start):
     assert app["sessions"] == {}
 
 
+def test_a_negative_seed_is_refused_by_name_and_opens_nothing(client, app):
+    ws = client.ws()
+    ws.send({"type": "start", "modality": "CT", "protocol_id": PROTOCOL, "patient_id": "sub-000", "seed": -1})
+    assert "The seed must be a whole number from 0 up" in ws.next("error")["message"]
+    assert app["sessions"] == {}
+
+
+def test_a_refused_start_leaves_the_running_exam_alone(client, app):
+    ws = client.started_ws()
+    for bad in ({"seed": -1}, {"patient_id": "nobody"}, {"protocol_id": "nope"}):
+        ws.send({"type": "start", "modality": "CT", "protocol_id": PROTOCOL, "patient_id": "sub-000", "seed": 1, **bad})
+        assert ws.next("error")["message"]
+        assert list(app["sessions"]) == [ws.session_id]
+    ws.send({"type": "action", "id": 5, "action": {"type": "perform", "step_id": "order_received"}})
+    assert ws.next("result") == {"type": "result", "id": 5, "ok": True, "error": None}
+
+
 def test_malformed_messages_get_error_messages(client):
     ws = client.ws()
     ws.send_raw("not json")

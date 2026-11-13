@@ -215,9 +215,16 @@ class TrackingView(BaseModel):
     triggered_at_s: Optional[float] = None   # simulation time
 
 
+class ExtraExposure(BaseModel):       # in the dose total, but no series row shows it
+    label: str                        # the series it belonged to
+    what: str                         # "stopped after 31% of its range" or "earlier scan, scanned again"
+    dlp_mgycm: float
+
+
 class DoseView(BaseModel):
     total_dlp_mgycm: float
     alerts: list[str] = []
+    extra_exposures: list[ExtraExposure] = []      # with the rows of the scanned series they add up to the total
 
 
 class ReferenceLine(BaseModel):

@@ -201,6 +201,22 @@ describe('doing a done step again', () => {
     }
   })
 
+  test('a done step that can no longer be repeated says why', () => {
+    useSession.setState({ snapshot: idle })
+    const why = 'The injection has started, so "Set table height" cannot be done again'
+    render(<StepCard step={makeStep({ status: 'done', repeatable: false, blocked_by: [why] })} />)
+    expect(screen.getByText(why)).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Do again' })).toBeNull()
+    expect((screen.getByRole('button', { name: 'Set height' }) as HTMLButtonElement).disabled).toBe(true)
+  })
+
+  test('a step waiting to be redone that is still blocked says why and cannot be performed yet', () => {
+    useSession.setState({ snapshot: idle })
+    render(<StepCard step={makeStep({ status: 'redo', repeatable: true, blocked_by: ['Do "Leave room" first'] })} />)
+    expect(screen.getByText('Do "Leave room" first')).toBeTruthy()
+    expect((screen.getByRole('button', { name: 'Set height' }) as HTMLButtonElement).disabled).toBe(true)
+  })
+
   test('a step waiting to be redone keeps its own label and can be performed', () => {
     useSession.setState({ snapshot: idle })
     render(<StepCard step={makeStep({ status: 'redo', repeatable: true })} />)

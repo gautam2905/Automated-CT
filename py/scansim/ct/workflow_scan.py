@@ -13,6 +13,7 @@ from scansim.ct.planning import ScanPlanner
 from scansim.ct.repeat_rules import before_injection
 from scansim.ct.workflow_prescan import sample_step
 from scansim.ct.workflow_topogram import topogram_steps
+from scansim.snapshot import SeriesView
 
 NOT_ANSWERED, YES, NO = "not_answered", "yes", "no"
 ANSWERS = ((NOT_ANSWERED, "Not answered"), (YES, "Yes"), (NO, "No"))
@@ -30,10 +31,20 @@ def _scan_noncontrast(planner: ScanPlanner):
         finally:
             if repeat and ctx.console.find_series(NONCONTRAST).status != "done":
                 ctx.console.replace_series(earlier)          # the repeat did not happen: the earlier scan stands
+            elif repeat:                                     # also when stopped while the new images are rebuilt
+                _keep_on_the_dose_record(ctx, earlier)
         series = ctx.console.find_series(NONCONTRAST)
         step.add_result("DLP", f"{series.plan.dlp_mgycm:.0f} mGy·cm")
         step.add_result("Scan time", f"{series.plan.scan_time_s:.1f} s")
     return routine
+
+
+def _keep_on_the_dose_record(ctx: CTContext, earlier: SeriesView) -> None:
+    """A scan that was done again has lost its row to the new one, but it exposed the patient: its dose is
+    already in the total, so it is listed and logged."""
+    dlp = earlier.plan.dlp_mgycm
+    ctx.console.list_exposure(earlier.label, "earlier scan, scanned again", dlp)
+    ctx.log.add("event", f"{earlier.label}: scanned again; the earlier scan's {dlp:.0f} mGy·cm stays in the dose total")
 
 
 def _liver_margins_mm(ctx: CTContext, start_mm: float, end_mm: float) -> tuple[float, float]:

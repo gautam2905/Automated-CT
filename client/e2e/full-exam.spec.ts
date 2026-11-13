@@ -169,4 +169,9 @@ test('a whole CT liver exam can be performed through the interface', async ({ pa
   expect(end.stages.at(-1)?.steps.at(-1)).toMatchObject({ id: 'close_exam', status: 'done' })
   await openTab(page, 'Contrast')
   await expect(page.getByRole('heading', { name: /Bolus tracking, triggered/ })).toBeVisible()
+
+  // After the injection an earlier step can no longer be done again, and its card says why.
+  const planning = page.locator('[data-step="plan_ranges"]')
+  await expect(planning.getByRole('button', { name: 'Do again' })).toHaveCount(0)
+  await expect(planning).toContainText('The injection has started')
 })

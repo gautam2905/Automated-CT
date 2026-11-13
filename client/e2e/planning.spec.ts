@@ -71,6 +71,8 @@ test('a range dragged on the topogram stays drawn, and doing the plan step again
   const heights = await Promise.all([pending, accepted].map(async (box) => (await box.boundingBox())?.height ?? 0))
   expect(heights[0]).toBeLessThan(heights[1])
   await expect(page.locator('.topogram svg text', { hasText: 'not accepted yet' })).toBeVisible()
+  // Dragging moves the edge and nothing else: it must not select the labels drawn on the image.
+  expect(await page.evaluate(() => window.getSelection()?.toString() ?? '')).toBe('')
   await page.screenshot({ path: `${SCREENS}/app3-01-range-dragged-pending.png` })
 
   // The step is done and can be repeated: "Do again" accepts the dragged range.
@@ -102,6 +104,10 @@ test('Reset asks first, sits apart from Start, and a second exam with another se
 
   await page.getByRole('button', { name: 'Reset' }).click()
   await expect(page.getByText('Discard this exam? It is not saved.')).toBeVisible()
+  // The button that throws the exam away is drawn in the alert colour, not like "Start exam".
+  const fill = (name: string) => page.getByRole('button', { name }).evaluate((b) => getComputedStyle(b).backgroundColor)
+  expect(await fill('Discard exam')).toBe('rgb(166, 55, 49)')
+  expect(await fill('Discard exam')).not.toBe(await fill('Start exam'))
   await page.getByRole('button', { name: 'Keep exam' }).click()
   await expect(page.locator('[data-step="order_received"] [data-status]')).toHaveAttribute('data-status', 'done')
 

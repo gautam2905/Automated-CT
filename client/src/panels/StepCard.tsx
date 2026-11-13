@@ -40,8 +40,11 @@ export default function StepCard({ step }: { step: StepView }) {
   const anyRunning = useSession((s) => s.snapshot?.stages.some((st) => st.steps.some((x) => x.status === 'running')) ?? false)
   const isRunning = step.status === 'running'
   const repeat = canRepeat(step)
-  const canPerform = (step.status === 'ready' || step.status === 'redo' || repeat) && !anyRunning && !isRunning
-  const blockedBy = step.status === 'locked' ? (step.blocked_by ?? []) : []
+  // Why a step cannot start yet, or why a done step can no longer be done again: said on the card, because
+  // its button is disabled then and a refusal would never be seen.
+  const blockedBy = isRunning || repeat ? [] : (step.blocked_by ?? [])
+  const waiting = step.status === 'ready' || (step.status === 'redo' && blockedBy.length === 0)
+  const canPerform = (waiting || repeat) && !anyRunning && !isRunning
 
   return (
     <article
