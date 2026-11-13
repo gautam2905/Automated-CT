@@ -1,0 +1,1445 @@
+{
+  "version": 1,
+  "session_id": "sample",
+  "modality": "CT",
+  "protocol": {
+    "id": "ohsu.ct.multiphase_liver",
+    "title": "CT Multiphase Liver",
+    "modality": "CT",
+    "region": "abdomen",
+    "status": "complete",
+    "source_url": "https://www.ohsu.edu/sites/default/files/2026-09/ct-multiphase-liver-and-ct-multiphase-liver-with-pelvis-07.02.26.pdf"
+  },
+  "patient": {
+    "id": "P-0001",
+    "name": "Alex Sample",
+    "age": 58,
+    "sex": "M",
+    "height_cm": 172.0,
+    "weight_kg": 74.0,
+    "estimated_fields": [
+      "height_cm",
+      "weight_kg"
+    ]
+  },
+  "clock": {
+    "sim_time_s": 1431.6,
+    "time_scale": 5.0,
+    "contrast_timer_s": 19.6
+  },
+  "stages": [
+    {
+      "id": "request",
+      "title": "Request",
+      "steps": [
+        {
+          "id": "order_received",
+          "stage_id": "request",
+          "title": "Order received",
+          "actor": "radiologist",
+          "place": "console",
+          "info": "Read the exam request.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "protocol_assigned",
+          "stage_id": "request",
+          "title": "Protocol assigned",
+          "actor": "radiologist",
+          "place": "console",
+          "info": "Confirm the protocol matches the request.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "chart_check",
+          "stage_id": "request",
+          "title": "Chart check",
+          "actor": "nurse",
+          "place": "preparation",
+          "info": "Check allergies, kidney function and previous scans.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [
+            {
+              "key": "chart_note",
+              "label": "Chart note",
+              "type": "text",
+              "value": "No known contrast allergy",
+              "default": "",
+              "unit": "",
+              "min": null,
+              "max": null,
+              "step": null,
+              "options": [],
+              "source": "patient",
+              "help": "",
+              "editable": true
+            }
+          ],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        }
+      ]
+    },
+    {
+      "id": "arrival",
+      "title": "Arrival and screening",
+      "steps": [
+        {
+          "id": "identify_patient",
+          "stage_id": "arrival",
+          "title": "Identify patient",
+          "actor": "technologist",
+          "place": "reception",
+          "info": "Check name and date of birth against the order.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "safety_screening",
+          "stage_id": "arrival",
+          "title": "Safety screening",
+          "actor": "nurse",
+          "place": "reception",
+          "info": "Ask the screening questions.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "consent",
+          "stage_id": "arrival",
+          "title": "Consent",
+          "actor": "nurse",
+          "place": "reception",
+          "info": "Explain the exam and the contrast; record consent.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [
+            {
+              "key": "consent_given",
+              "label": "Consent given",
+              "type": "bool",
+              "value": true,
+              "default": false,
+              "unit": "",
+              "min": null,
+              "max": null,
+              "step": null,
+              "options": [],
+              "source": "patient",
+              "help": "",
+              "editable": true
+            }
+          ],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "change_clothes",
+          "stage_id": "arrival",
+          "title": "Change clothes",
+          "actor": "patient",
+          "place": "preparation",
+          "info": "Remove metal and change into a gown.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "iv_access",
+          "stage_id": "arrival",
+          "title": "IV access",
+          "actor": "nurse",
+          "place": "preparation",
+          "info": "Place a cannula in a suitable vein.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [
+            {
+              "key": "gauge",
+              "label": "Cannula gauge",
+              "type": "choice",
+              "value": "20g",
+              "default": "20g",
+              "unit": "",
+              "min": null,
+              "max": null,
+              "step": null,
+              "options": [
+                {
+                  "value": "18g",
+                  "label": "18 gauge"
+                },
+                {
+                  "value": "20g",
+                  "label": "20 gauge"
+                }
+              ],
+              "source": "protocol",
+              "help": "The protocol accepts 18g or 20g.",
+              "editable": true
+            }
+          ],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "breath_coaching",
+          "stage_id": "arrival",
+          "title": "Breath coaching",
+          "actor": "technologist",
+          "place": "preparation",
+          "info": "Practise the breath-hold with the patient.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        }
+      ]
+    },
+    {
+      "id": "preparation",
+      "title": "Preparation",
+      "steps": [
+        {
+          "id": "register_patient",
+          "stage_id": "preparation",
+          "title": "Register patient",
+          "actor": "technologist",
+          "place": "console",
+          "info": "Enter the patient and the protocol at the console.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [
+            {
+              "key": "height_cm",
+              "label": "Height",
+              "type": "number",
+              "value": 172.0,
+              "default": 172.0,
+              "unit": "cm",
+              "min": 100.0,
+              "max": 220.0,
+              "step": 1.0,
+              "options": [],
+              "source": "patient",
+              "help": "Estimated at the desk.",
+              "editable": true
+            },
+            {
+              "key": "weight_kg",
+              "label": "Weight",
+              "type": "number",
+              "value": 74.0,
+              "default": 74.0,
+              "unit": "kg",
+              "min": 30.0,
+              "max": 300.0,
+              "step": 1.0,
+              "options": [],
+              "source": "patient",
+              "help": "",
+              "editable": true
+            }
+          ],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "load_injector",
+          "stage_id": "preparation",
+          "title": "Load injector",
+          "actor": "technologist",
+          "place": "scan_room",
+          "info": "Fill and purge the injector syringes.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [
+            {
+              "key": "contrast_ml",
+              "label": "Contrast volume",
+              "type": "number",
+              "value": 125.0,
+              "default": 125.0,
+              "unit": "mL",
+              "min": 20.0,
+              "max": 200.0,
+              "step": 1.0,
+              "options": [],
+              "source": "protocol",
+              "help": "",
+              "editable": true
+            },
+            {
+              "key": "contrast_rate_ml_s",
+              "label": "Contrast rate",
+              "type": "number",
+              "value": 4.0,
+              "default": 4.0,
+              "unit": "mL/s",
+              "min": 1.0,
+              "max": 6.0,
+              "step": 0.5,
+              "options": [],
+              "source": "protocol",
+              "help": "",
+              "editable": true
+            },
+            {
+              "key": "saline_ml",
+              "label": "Saline chaser",
+              "type": "number",
+              "value": 40.0,
+              "default": 40.0,
+              "unit": "mL",
+              "min": 0.0,
+              "max": 100.0,
+              "step": 5.0,
+              "options": [],
+              "source": "assumption",
+              "help": "",
+              "editable": true
+            }
+          ],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "prepare_table",
+          "stage_id": "preparation",
+          "title": "Prepare table",
+          "actor": "technologist",
+          "place": "scan_room",
+          "info": "Cover the table and lay out supports.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        }
+      ]
+    },
+    {
+      "id": "positioning",
+      "title": "Positioning",
+      "steps": [
+        {
+          "id": "patient_on_table",
+          "stage_id": "positioning",
+          "title": "Patient on table",
+          "actor": "patient",
+          "place": "scan_room",
+          "info": "Help the patient lie supine, feet first, arms up.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "centre_patient",
+          "stage_id": "positioning",
+          "title": "Centre patient",
+          "actor": "technologist",
+          "place": "scan_room",
+          "info": "Straighten and centre the patient on the table.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "connect_injector",
+          "stage_id": "positioning",
+          "title": "Connect injector",
+          "actor": "technologist",
+          "place": "scan_room",
+          "info": "Connect the line and test-flush with saline.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "table_height",
+          "stage_id": "positioning",
+          "title": "Table height",
+          "actor": "technologist",
+          "place": "scan_room",
+          "info": "Set the table height to the isocentre.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "set_landmark",
+          "stage_id": "positioning",
+          "title": "Set landmark",
+          "actor": "technologist",
+          "place": "scan_room",
+          "info": "Put the laser on the landmark and zero the table.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "leave_room",
+          "stage_id": "positioning",
+          "title": "Leave room",
+          "actor": "technologist",
+          "place": "scan_room",
+          "info": "Leave the room and close the door.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        }
+      ]
+    },
+    {
+      "id": "topogram",
+      "title": "Topogram",
+      "steps": [
+        {
+          "id": "topogram_ap",
+          "stage_id": "topogram",
+          "title": "AP topogram",
+          "actor": "scanner",
+          "place": "console",
+          "info": "Acquire the AP topogram.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": true,
+          "action_label": "Do step"
+        },
+        {
+          "id": "topogram_lat",
+          "stage_id": "topogram",
+          "title": "Lateral topogram",
+          "actor": "scanner",
+          "place": "console",
+          "info": "Acquire the lateral topogram.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": true,
+          "action_label": "Do step"
+        },
+        {
+          "id": "check_centring",
+          "stage_id": "topogram",
+          "title": "Check centring",
+          "actor": "technologist",
+          "place": "console",
+          "info": "Check the patient is centred on both views.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [
+            {
+              "label": "Centring offset",
+              "value": "4 mm",
+              "alert": false
+            }
+          ],
+          "repeatable": false,
+          "action_label": "Do step"
+        }
+      ]
+    },
+    {
+      "id": "planning",
+      "title": "Planning",
+      "steps": [
+        {
+          "id": "plan_ranges",
+          "stage_id": "planning",
+          "title": "Plan ranges",
+          "actor": "technologist",
+          "place": "console",
+          "info": "Set the scan range for each series on the topogram.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [
+            {
+              "key": "noncontrast.start_mm",
+              "label": "Non-contrast start",
+              "type": "number",
+              "value": -80.0,
+              "default": -80.0,
+              "unit": "mm",
+              "min": -1500.0,
+              "max": 1500.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "From the landmark; negative is toward the head.",
+              "editable": true
+            },
+            {
+              "key": "noncontrast.end_mm",
+              "label": "Non-contrast end",
+              "type": "number",
+              "value": 320.0,
+              "default": 320.0,
+              "unit": "mm",
+              "min": -1500.0,
+              "max": 1500.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "",
+              "editable": true
+            },
+            {
+              "key": "arterial.start_mm",
+              "label": "Arterial start",
+              "type": "number",
+              "value": -80.0,
+              "default": -80.0,
+              "unit": "mm",
+              "min": -1500.0,
+              "max": 1500.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "From the landmark; negative is toward the head.",
+              "editable": true
+            },
+            {
+              "key": "arterial.end_mm",
+              "label": "Arterial end",
+              "type": "number",
+              "value": 320.0,
+              "default": 320.0,
+              "unit": "mm",
+              "min": -1500.0,
+              "max": 1500.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "",
+              "editable": true
+            },
+            {
+              "key": "venous.start_mm",
+              "label": "Venous start",
+              "type": "number",
+              "value": -80.0,
+              "default": -80.0,
+              "unit": "mm",
+              "min": -1500.0,
+              "max": 1500.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "From the landmark; negative is toward the head.",
+              "editable": true
+            },
+            {
+              "key": "venous.end_mm",
+              "label": "Venous end",
+              "type": "number",
+              "value": 320.0,
+              "default": 320.0,
+              "unit": "mm",
+              "min": -1500.0,
+              "max": 1500.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "",
+              "editable": true
+            },
+            {
+              "key": "delayed.start_mm",
+              "label": "4 minute delay start",
+              "type": "number",
+              "value": -80.0,
+              "default": -80.0,
+              "unit": "mm",
+              "min": -1500.0,
+              "max": 1500.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "From the landmark; negative is toward the head.",
+              "editable": true
+            },
+            {
+              "key": "delayed.end_mm",
+              "label": "4 minute delay end",
+              "type": "number",
+              "value": 320.0,
+              "default": 320.0,
+              "unit": "mm",
+              "min": -1500.0,
+              "max": 1500.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "",
+              "editable": true
+            },
+            {
+              "key": "link_ranges",
+              "label": "Link ranges",
+              "type": "bool",
+              "value": true,
+              "default": true,
+              "unit": "",
+              "min": null,
+              "max": null,
+              "step": null,
+              "options": [],
+              "source": "assumption",
+              "help": "While on, changing one series' start or end changes them all.",
+              "editable": true
+            },
+            {
+              "key": "fov_mm",
+              "label": "Field of view",
+              "type": "number",
+              "value": 400.0,
+              "default": 400.0,
+              "unit": "mm",
+              "min": 100.0,
+              "max": 500.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "",
+              "editable": true
+            },
+            {
+              "key": "fov_center_x_mm",
+              "label": "Field of view centre x",
+              "type": "number",
+              "value": 0.0,
+              "default": 0.0,
+              "unit": "mm",
+              "min": -250.0,
+              "max": 250.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "",
+              "editable": true
+            },
+            {
+              "key": "fov_center_y_mm",
+              "label": "Field of view centre y",
+              "type": "number",
+              "value": 20.0,
+              "default": 20.0,
+              "unit": "mm",
+              "min": -250.0,
+              "max": 250.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "",
+              "editable": true
+            }
+          ],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "confirm_settings",
+          "stage_id": "planning",
+          "title": "Confirm settings",
+          "actor": "technologist",
+          "place": "console",
+          "info": "Check kV, dose and reconstruction settings.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [
+            {
+              "key": "kv",
+              "label": "Tube voltage",
+              "type": "number",
+              "value": 120.0,
+              "default": 120.0,
+              "unit": "kV",
+              "min": 70.0,
+              "max": 150.0,
+              "step": 10.0,
+              "options": [],
+              "source": "protocol",
+              "help": "",
+              "editable": true
+            },
+            {
+              "key": "quality_ref_mas",
+              "label": "Quality reference",
+              "type": "number",
+              "value": 147.0,
+              "default": 147.0,
+              "unit": "mAs",
+              "min": 20.0,
+              "max": 400.0,
+              "step": 1.0,
+              "options": [],
+              "source": "protocol",
+              "help": "",
+              "editable": true
+            },
+            {
+              "key": "ctdi_estimate_mgy",
+              "label": "Estimated CTDIvol",
+              "type": "number",
+              "value": 11.8,
+              "default": 11.8,
+              "unit": "mGy",
+              "min": null,
+              "max": null,
+              "step": null,
+              "options": [],
+              "source": "computed",
+              "help": "",
+              "editable": false
+            }
+          ],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        }
+      ]
+    },
+    {
+      "id": "noncontrast",
+      "title": "Non-contrast scan",
+      "steps": [
+        {
+          "id": "scan_noncontrast",
+          "stage_id": "noncontrast",
+          "title": "Scan non-contrast",
+          "actor": "scanner",
+          "place": "console",
+          "info": "Give the breath command and scan.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [
+            {
+              "label": "DLP",
+              "value": "467 mGy\u00b7cm",
+              "alert": false
+            }
+          ],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "review_noncontrast",
+          "stage_id": "noncontrast",
+          "title": "Review non-contrast",
+          "actor": "technologist",
+          "place": "console",
+          "info": "Check the whole liver is covered.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [
+            {
+              "label": "Liver covered",
+              "value": "Yes",
+              "alert": false
+            }
+          ],
+          "repeatable": false,
+          "action_label": "Do step"
+        }
+      ]
+    },
+    {
+      "id": "tracking",
+      "title": "Tracking set-up",
+      "steps": [
+        {
+          "id": "monitoring_slice",
+          "stage_id": "tracking",
+          "title": "Monitoring slice",
+          "actor": "technologist",
+          "place": "console",
+          "info": "Scan the monitoring slice at the tracking level.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": true,
+          "action_label": "Do step"
+        },
+        {
+          "id": "place_roi",
+          "stage_id": "tracking",
+          "title": "Place ROI",
+          "actor": "technologist",
+          "place": "console",
+          "info": "Place the region of interest in the descending aorta.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [
+            {
+              "key": "roi_r_mm",
+              "label": "ROI radius",
+              "type": "number",
+              "value": 8.0,
+              "default": 8.0,
+              "unit": "mm",
+              "min": 3.0,
+              "max": 15.0,
+              "step": 1.0,
+              "options": [],
+              "source": "assumption",
+              "help": "",
+              "editable": true
+            }
+          ],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "arm_injector",
+          "stage_id": "tracking",
+          "title": "Arm injector",
+          "actor": "technologist",
+          "place": "console",
+          "info": "Arm the injector and check the pressure limit.",
+          "status": "done",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        }
+      ]
+    },
+    {
+      "id": "contrast",
+      "title": "Contrast phases",
+      "steps": [
+        {
+          "id": "inject_and_arterial",
+          "stage_id": "contrast",
+          "title": "Inject and arterial scan",
+          "actor": "scanner",
+          "place": "console",
+          "info": "Start the injection and monitoring; scan on trigger.",
+          "status": "running",
+          "blocked_by": [],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "scan_venous",
+          "stage_id": "contrast",
+          "title": "Venous scan",
+          "actor": "scanner",
+          "place": "console",
+          "info": "Scan 55 seconds after the trigger.",
+          "status": "locked",
+          "blocked_by": [
+            "inject_and_arterial"
+          ],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "scan_delayed",
+          "stage_id": "contrast",
+          "title": "Delayed scan",
+          "actor": "scanner",
+          "place": "console",
+          "info": "Scan 4 minutes after the injection start.",
+          "status": "locked",
+          "blocked_by": [
+            "scan_venous"
+          ],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "title": "Review and send",
+      "steps": [
+        {
+          "id": "review_phases",
+          "stage_id": "review",
+          "title": "Review phases",
+          "actor": "technologist",
+          "place": "console",
+          "info": "Check each phase for coverage, motion and enhancement.",
+          "status": "locked",
+          "blocked_by": [
+            "scan_delayed"
+          ],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "send_images",
+          "stage_id": "review",
+          "title": "Send images",
+          "actor": "technologist",
+          "place": "console",
+          "info": "Send the images to the archive.",
+          "status": "locked",
+          "blocked_by": [
+            "review_phases"
+          ],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        }
+      ]
+    },
+    {
+      "id": "aftercare",
+      "title": "Aftercare",
+      "steps": [
+        {
+          "id": "table_out",
+          "stage_id": "aftercare",
+          "title": "Table out",
+          "actor": "technologist",
+          "place": "scan_room",
+          "info": "Bring the table out and enter the room.",
+          "status": "locked",
+          "blocked_by": [
+            "send_images"
+          ],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "disconnect_injector",
+          "stage_id": "aftercare",
+          "title": "Disconnect injector",
+          "actor": "nurse",
+          "place": "scan_room",
+          "info": "Disconnect the line from the cannula.",
+          "status": "locked",
+          "blocked_by": [
+            "table_out"
+          ],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "patient_off_table",
+          "stage_id": "aftercare",
+          "title": "Patient off table",
+          "actor": "patient",
+          "place": "scan_room",
+          "info": "Help the patient off the table.",
+          "status": "locked",
+          "blocked_by": [
+            "disconnect_injector"
+          ],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "post_contrast_care",
+          "stage_id": "aftercare",
+          "title": "Post-contrast care",
+          "actor": "nurse",
+          "place": "preparation",
+          "info": "Check the site and give after-care advice.",
+          "status": "locked",
+          "blocked_by": [
+            "patient_off_table"
+          ],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "room_turnaround",
+          "stage_id": "aftercare",
+          "title": "Room turnaround",
+          "actor": "technologist",
+          "place": "scan_room",
+          "info": "Clean the table and reset the room.",
+          "status": "locked",
+          "blocked_by": [
+            "post_contrast_care"
+          ],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        },
+        {
+          "id": "close_exam",
+          "stage_id": "aftercare",
+          "title": "Close exam",
+          "actor": "technologist",
+          "place": "console",
+          "info": "Complete the record.",
+          "status": "locked",
+          "blocked_by": [
+            "room_turnaround"
+          ],
+          "fields": [],
+          "results": [],
+          "repeatable": false,
+          "action_label": "Do step"
+        }
+      ]
+    }
+  ],
+  "active_step_id": "inject_and_arterial",
+  "busy_text": "Injecting and monitoring",
+  "room": {
+    "door_open": false,
+    "warning_light_on": true,
+    "lasers_on": false,
+    "technologist_at": "console"
+  },
+  "table": {
+    "height_mm": 880.0,
+    "long_mm": 1130.0,
+    "long_max_mm": 2000.0,
+    "height_min_mm": 515.0,
+    "height_max_mm": 900.0,
+    "zero_long_mm": 730.0,
+    "position_mm": 140.0
+  },
+  "pose": {
+    "surface_marks": [
+      {
+        "name": "sternal_notch",
+        "label": "Sternal notch",
+        "z_body_mm": 306.0
+      },
+      {
+        "name": "xiphoid",
+        "label": "Xiphoid process",
+        "z_body_mm": 476.0
+      },
+      {
+        "name": "iliac_crest",
+        "label": "Iliac crest",
+        "z_body_mm": 690.0
+      }
+    ],
+    "stage": "lying",
+    "entry": "feet_first",
+    "orientation": "supine",
+    "arms": "up",
+    "lateral_offset_mm": 3.0,
+    "yaw_deg": 0.5,
+    "breath": 0.0,
+    "holding": false,
+    "anchor_t_mm": 120.0,
+    "stature_mm": 1720.0,
+    "iv_connected": true
+  },
+  "scanner": {
+    "kind": "CT",
+    "model": "SOMATOM Force",
+    "tube_angle_deg": 90.0,
+    "rotor_rps": 2.0,
+    "beam_on": true,
+    "kv": 120,
+    "ma": 20.0,
+    "iso_height_mm": 960.0,
+    "laser_z_mm": 400.0,
+    "front_clearance_mm": 300.0,
+    "bore_diameter_mm": 780.0
+  },
+  "injector": {
+    "state": "injecting",
+    "contrast_ml": 46.6,
+    "saline_ml": 40.0,
+    "flow_ml_s": 4.0,
+    "pressure_psi": 182.0,
+    "pressure_limit_psi": 325.0,
+    "injected_contrast_ml": 78.4,
+    "injected_saline_ml": 0.0
+  },
+  "console": {
+    "topograms": [
+      {
+        "view": "AP",
+        "image_url": "/api/session/sample/topogram/AP.png",
+        "rows": 512,
+        "cols": 384,
+        "row_mm": 1.0,
+        "col_mm": 1.0,
+        "row0_from_landmark_mm": -120.0,
+        "revealed_from_row": 0,
+        "revealed_to_row": 512,
+        "complete": true
+      },
+      {
+        "view": "LAT",
+        "image_url": "/api/session/sample/topogram/LAT.png",
+        "rows": 512,
+        "cols": 256,
+        "row_mm": 1.0,
+        "col_mm": 1.0,
+        "row0_from_landmark_mm": -120.0,
+        "revealed_from_row": 0,
+        "revealed_to_row": 512,
+        "complete": true
+      }
+    ],
+    "series": [
+      {
+        "id": "noncontrast",
+        "label": "Non-contrast",
+        "status": "done",
+        "plan": {
+          "start_mm": -80.0,
+          "end_mm": 320.0,
+          "fov_mm": 400.0,
+          "fov_center_x_mm": 0.0,
+          "fov_center_y_mm": 20.0,
+          "kv": 120,
+          "quality_ref_mas": 147.0,
+          "pitch": 0.8,
+          "rotation_s": 0.5,
+          "collimation_mm": 57.6,
+          "feed_mm_s": 92.16,
+          "scan_time_s": 4.34,
+          "ctdi_vol_mgy": 11.7,
+          "dlp_mgycm": 468.0
+        },
+        "recons": [
+          {
+            "plane": "axial",
+            "thickness_mm": 3.0,
+            "increment_mm": 1.5,
+            "kernel": "Br40",
+            "image_count": 267,
+            "ready": true
+          }
+        ],
+        "image_url_template": "/api/session/sample/series/noncontrast/{plane}/{index}.png",
+        "scanned_fraction": 1.0,
+        "started_at_s": 1210.0,
+        "motion": false
+      },
+      {
+        "id": "arterial",
+        "label": "Arterial",
+        "status": "planned",
+        "plan": {
+          "start_mm": -80.0,
+          "end_mm": 320.0,
+          "fov_mm": 400.0,
+          "fov_center_x_mm": 0.0,
+          "fov_center_y_mm": 20.0,
+          "kv": 120,
+          "quality_ref_mas": 147.0,
+          "pitch": 0.8,
+          "rotation_s": 0.5,
+          "collimation_mm": 57.6,
+          "feed_mm_s": 92.16,
+          "scan_time_s": 4.34,
+          "ctdi_vol_mgy": 11.7,
+          "dlp_mgycm": 468.0
+        },
+        "recons": [
+          {
+            "plane": "axial",
+            "thickness_mm": 3.0,
+            "increment_mm": 1.5,
+            "kernel": "Br40",
+            "image_count": 267,
+            "ready": false
+          },
+          {
+            "plane": "coronal",
+            "thickness_mm": 5.0,
+            "increment_mm": 2.5,
+            "kernel": "Br40",
+            "image_count": 100,
+            "ready": false
+          },
+          {
+            "plane": "sagittal",
+            "thickness_mm": 5.0,
+            "increment_mm": 2.5,
+            "kernel": "Br40",
+            "image_count": 120,
+            "ready": false
+          }
+        ],
+        "image_url_template": "/api/session/sample/series/arterial/{plane}/{index}.png",
+        "scanned_fraction": 0.0,
+        "started_at_s": null,
+        "motion": false
+      },
+      {
+        "id": "venous",
+        "label": "Venous",
+        "status": "planned",
+        "plan": {
+          "start_mm": -80.0,
+          "end_mm": 320.0,
+          "fov_mm": 400.0,
+          "fov_center_x_mm": 0.0,
+          "fov_center_y_mm": 20.0,
+          "kv": 120,
+          "quality_ref_mas": 147.0,
+          "pitch": 0.8,
+          "rotation_s": 0.5,
+          "collimation_mm": 57.6,
+          "feed_mm_s": 92.16,
+          "scan_time_s": 4.34,
+          "ctdi_vol_mgy": 11.7,
+          "dlp_mgycm": 468.0
+        },
+        "recons": [
+          {
+            "plane": "axial",
+            "thickness_mm": 3.0,
+            "increment_mm": 1.5,
+            "kernel": "Br40",
+            "image_count": 267,
+            "ready": false
+          },
+          {
+            "plane": "coronal",
+            "thickness_mm": 5.0,
+            "increment_mm": 2.5,
+            "kernel": "Br40",
+            "image_count": 100,
+            "ready": false
+          },
+          {
+            "plane": "sagittal",
+            "thickness_mm": 5.0,
+            "increment_mm": 2.5,
+            "kernel": "Br40",
+            "image_count": 120,
+            "ready": false
+          }
+        ],
+        "image_url_template": "/api/session/sample/series/venous/{plane}/{index}.png",
+        "scanned_fraction": 0.0,
+        "started_at_s": null,
+        "motion": false
+      },
+      {
+        "id": "delayed",
+        "label": "4 minute delay",
+        "status": "planned",
+        "plan": {
+          "start_mm": -80.0,
+          "end_mm": 320.0,
+          "fov_mm": 400.0,
+          "fov_center_x_mm": 0.0,
+          "fov_center_y_mm": 20.0,
+          "kv": 120,
+          "quality_ref_mas": 147.0,
+          "pitch": 0.8,
+          "rotation_s": 0.5,
+          "collimation_mm": 57.6,
+          "feed_mm_s": 92.16,
+          "scan_time_s": 4.34,
+          "ctdi_vol_mgy": 11.7,
+          "dlp_mgycm": 468.0
+        },
+        "recons": [
+          {
+            "plane": "axial",
+            "thickness_mm": 3.0,
+            "increment_mm": 1.5,
+            "kernel": "Br40",
+            "image_count": 267,
+            "ready": false
+          }
+        ],
+        "image_url_template": "/api/session/sample/series/delayed/{plane}/{index}.png",
+        "scanned_fraction": 0.0,
+        "started_at_s": null,
+        "motion": false
+      }
+    ],
+    "tracking": {
+      "state": "monitoring",
+      "slice_mm": 140.0,
+      "image_url": "/api/session/sample/tracking.png",
+      "roi_x_mm": -12.0,
+      "roi_y_mm": 38.0,
+      "roi_r_mm": 8.0,
+      "threshold_hu": 100.0,
+      "baseline_hu": 45.0,
+      "samples": [
+        {
+          "t_s": 10.0,
+          "hu": 44.0
+        },
+        {
+          "t_s": 11.2,
+          "hu": 45.0
+        },
+        {
+          "t_s": 12.4,
+          "hu": 43.0
+        },
+        {
+          "t_s": 13.6,
+          "hu": 46.0
+        },
+        {
+          "t_s": 14.8,
+          "hu": 49.0
+        },
+        {
+          "t_s": 16.0,
+          "hu": 58.0
+        },
+        {
+          "t_s": 17.2,
+          "hu": 74.0
+        },
+        {
+          "t_s": 18.4,
+          "hu": 96.0
+        }
+      ],
+      "triggered_at_s": null
+    },
+    "dose": {
+      "total_dlp_mgycm": 1021.0,
+      "alerts": []
+    },
+    "reference": [],
+    "reference_points": []
+  },
+  "log": [
+    {
+      "t_s": 0.0,
+      "kind": "step",
+      "text": "Order received."
+    },
+    {
+      "t_s": 40.0,
+      "kind": "step",
+      "text": "Protocol assigned: CT Multiphase Liver."
+    },
+    {
+      "t_s": 300.0,
+      "kind": "step",
+      "text": "Patient identified and screened."
+    },
+    {
+      "t_s": 620.0,
+      "kind": "step",
+      "text": "IV access placed, 20g."
+    },
+    {
+      "t_s": 840.0,
+      "kind": "step",
+      "text": "Injector loaded and purged."
+    },
+    {
+      "t_s": 1010.0,
+      "kind": "step",
+      "text": "Patient positioned, feet first."
+    },
+    {
+      "t_s": 1100.0,
+      "kind": "event",
+      "text": "Landmark set above the liver."
+    },
+    {
+      "t_s": 1130.0,
+      "kind": "event",
+      "text": "AP and lateral topograms acquired."
+    },
+    {
+      "t_s": 1210.0,
+      "kind": "step",
+      "text": "Non-contrast scan complete."
+    },
+    {
+      "t_s": 1330.0,
+      "kind": "event",
+      "text": "Monitoring slice acquired."
+    },
+    {
+      "t_s": 1400.0,
+      "kind": "step",
+      "text": "Injector armed."
+    },
+    {
+      "t_s": 1412.0,
+      "kind": "event",
+      "text": "Injection started, 4.0 mL/s."
+    }
+  ],
+  "show_reference": false
+}

@@ -1,0 +1,48 @@
+.panel--scene {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  background: var(--viewer);
+}
+
+.panel--scene canvas {
+  display: block;
+}
+
+.scene__cams {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.scene__cam {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(12, 27, 36, 0.62);
+  color: #e6eef2;
+  cursor: pointer;
+}
+
+.scene__cam--on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.scene__empty {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  color: #cfdde4;
+  font-size: 0.9rem;
+  pointer-events: none;
+}

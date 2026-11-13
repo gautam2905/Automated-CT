@@ -1,0 +1,24 @@
+# installed packages and build output
+client/node_modules/
+client/dist/
+client/test-results/
+client/playwright-report/
+
+# python caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# local patient packs: large, derived from the dataset, rebuilt with tools/build_patient_pack.py
+data/patients/
+*.npy
+*.npz
+
+# local workflow records and screenshots (not code)
+.superpowers/
+client/e2e/screens/
+examples/
+
+# editor and OS files
+.DS_Store
+*.swp

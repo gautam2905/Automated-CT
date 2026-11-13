@@ -1,0 +1,176 @@
+{
+  "id": "ohsu.ct.multiphase_liver",
+  "modality": "CT",
+  "title": "CT Multiphase Liver",
+  "region": "abdomen",
+  "status": "complete",
+  "source": {
+    "organisation": "Oregon Health & Science University (OHSU), Diagnostic Radiology",
+    "url": "https://www.ohsu.edu/sites/default/files/2026-09/ct-multiphase-liver-and-ct-multiphase-liver-with-pelvis-07.02.26.pdf",
+    "reviewed": "2026-02-07",
+    "local_file": "/mnt/CT_SCAN/PROTOCOLS/extracted_text/ct-multiphase-liver-and-ct-multiphase-liver-with-pelvis-07.02.26.txt"
+  },
+  "indication": "Evaluation and characterization of focal liver lesions",
+  "positioning": {
+    "orientation": "supine",
+    "entry": "feet_first",
+    "arms": "up",
+    "laser_landmark": "Above liver",
+    "landmark_fraction_of_height": 0.27
+  },
+  "preparation": ["PO prep: none", "IV access 18g or 20g"],
+  "topogram": {
+    "views": ["AP", "LAT"],
+    "direction": "craniocaudal",
+    "coverage_text": "Above the dome of liver to iliac crest",
+    "start_from_landmark_mm": -120,
+    "length_mm": 512,
+    "kv": 120,
+    "ma": 20
+  },
+  "contrast": {
+    "agent": "Omnipaque 350 (iohexol)",
+    "concentration_mgi_ml": 350,
+    "volume_ml": 125,
+    "rate_ml_s": 4.0,
+    "saline_ml": 40,
+    "saline_rate_ml_s": 4.0,
+    "iv_gauges": ["18g", "20g"],
+    "timing": {
+      "method": "bolus_tracking",
+      "roi_text": "Put tracker Mid-Pancreas on the Descending Aorta.",
+      "level_text": "Bolus tracker Mid-Liver in Descending Aorta.",
+      "threshold_hu": 100,
+      "monitoring_delay_s": 10,
+      "monitoring_interval_s": 1.2,
+      "max_monitoring_s": 60,
+      "post_trigger_delay_s": 15
+    }
+  },
+  "series": [
+    {
+      "id": "noncontrast",
+      "label": "Non-contrast",
+      "coverage_text": "Diaphragm to Iliac Crest",
+      "default_start_mm": -80,
+      "default_end_mm": 320,
+      "timing": {"type": "before_contrast", "delay_s": 0},
+      "breath_hold": "inspiration",
+      "recons": [
+        {"plane": "axial", "thickness_mm": 3, "increment_mm": 1.5, "kernel": "Br40"}
+      ]
+    },
+    {
+      "id": "arterial",
+      "label": "Arterial",
+      "coverage_text": "Diaphragm to Iliac Crest",
+      "default_start_mm": -80,
+      "default_end_mm": 320,
+      "timing": {"type": "at_trigger", "delay_s": 0},
+      "breath_hold": "inspiration",
+      "recons": [
+        {"plane": "axial", "thickness_mm": 3, "increment_mm": 1.5, "kernel": "Br40"},
+        {"plane": "coronal", "thickness_mm": 5, "increment_mm": 2.5, "kernel": "Br40"},
+        {"plane": "sagittal", "thickness_mm": 5, "increment_mm": 2.5, "kernel": "Br40"}
+      ]
+    },
+    {
+      "id": "venous",
+      "label": "Venous",
+      "coverage_text": "Diaphragm to Iliac Crest",
+      "default_start_mm": -80,
+      "default_end_mm": 320,
+      "timing": {"type": "after_trigger", "delay_s": 55},
+      "breath_hold": "inspiration",
+      "recons": [
+        {"plane": "axial", "thickness_mm": 3, "increment_mm": 1.5, "kernel": "Br40"},
+        {"plane": "coronal", "thickness_mm": 5, "increment_mm": 2.5, "kernel": "Br40"},
+        {"plane": "sagittal", "thickness_mm": 5, "increment_mm": 2.5, "kernel": "Br40"}
+      ]
+    },
+    {
+      "id": "delayed",
+      "label": "4 minute delay",
+      "coverage_text": "Diaphragm to Iliac Crest",
+      "default_start_mm": -80,
+      "default_end_mm": 320,
+      "timing": {"type": "after_injection_start", "delay_s": 240},
+      "breath_hold": "inspiration",
+      "recons": [
+        {"plane": "axial", "thickness_mm": 3, "increment_mm": 1.5, "kernel": "Br40"}
+      ]
+    }
+  ],
+  "scan_defaults": {
+    "kv": 120,
+    "quality_ref_mas": 147,
+    "pitch": 0.8,
+    "rotation_s": 0.5,
+    "collimation_mm": 57.6,
+    "fov_mm": 400,
+    "iterative": "ADMIRE strength 3"
+  },
+  "review_checks": [
+    "Review the non-contrast scan to ensure all of the liver is included.",
+    "Check that the tracker sits on the descending aorta."
+  ],
+  "notes": [
+    "The sheet gives 4.0 or 5.0 mL/s for the injection; its scan instructions for this variant use 4 mL/s, which is the value used here.",
+    "The sheet text says the tracker goes 'Mid-Pancreas' in the summary and 'Mid-Liver' in the scan instructions; both are kept as quotes. The tracker is placed in the descending aorta either way."
+  ],
+  "quotes": {
+    "positioning.orientation": "Supine Feet First",
+    "positioning.laser_landmark": "Above Liver",
+    "positioning.arms": "Top to Bottom Dual Scout (with arms up)",
+    "topogram.coverage_text": "Above the dome of liver to iliac crest",
+    "indication": "Evaluation and characterization of focal liver lesions",
+    "preparation": "PO Prep None",
+    "contrast.iv_gauges": "IV access 18g or 20g",
+    "contrast.volume_ml": "125ml OMNI 350 @ 4.0 or 5.0mL/sec",
+    "contrast.rate_ml_s": "125ml of contrast @ 4ml/sec",
+    "contrast.timing.method": "Bolus Tracked: Trigger Scan from HU.",
+    "contrast.timing.roi_text": "Put tracker Mid-Pancreas on the Descending Aorta.",
+    "contrast.timing.level_text": "Bolus tracker Mid-Liver in Descending Aorta.",
+    "series.noncontrast.coverage_text": "NON-CONTRAST Diaphragm to Iliac Crest (Blue box)",
+    "series.noncontrast.recons": "Axial 3mm x 1.5mm (soft tissue)",
+    "series.arterial.recons": "Coronal 5mm x 2.5mm (soft tissue)",
+    "series.venous.timing": "VENOUS delay 55 seconds after bolus tracker.",
+    "series.delayed.timing": "4 minute delay Diaphragm to Iliac Crest (Blue box)",
+    "series.delayed.note": "Contrast timer on injector will show 4 minutes since the start of the injection",
+    "series.breath_hold": "Respiratory Phase Inspiratory",
+    "scan_defaults.kv": "Ref kV= 120",
+    "scan_defaults.quality_ref_mas": "QRM = 147",
+    "scan_defaults.iterative": "Admire Strength 3",
+    "review_checks": "Review non con scan to ensure all of the liver is included."
+  },
+  "assumptions": {
+    "topogram.start_from_landmark_mm": "assumed: starts 120 mm above the laser landmark so a 512 mm run covers the default scan box (-80 to 320 mm) with margin; the sheet gives the coverage only in words",
+    "topogram.length_mm": "assumed: 512 mm AP default for abdomen, https://www.aapm.org/pubs/ctprotocols/documents/adultabdomenpelvisct.pdf",
+    "topogram.kv": "assumed: 120 kV from the Siemens dual-topogram example, https://academy.siemens-healthineers.com/_/en-us/syngo-ct-vb10-software-update-care-dose-4d-dual-topogram-job-aid",
+    "topogram.ma": "assumed: 20 mA from the Siemens dual-topogram example, https://academy.siemens-healthineers.com/_/en-us/syngo-ct-vb10-software-update-care-dose-4d-dual-topogram-job-aid",
+    "contrast.saline_ml": "assumed: 40 mL saline chaser (30 to 40 mL for multiphasic liver CT), https://www.aapm.org/pubs/CTProtocols/documents/Adult_Tri-phasic_Liver_HCC_AAPM_format_Clean.pdf",
+    "contrast.saline_rate_ml_s": "assumed: same rate as the contrast, https://pmc.ncbi.nlm.nih.gov/articles/PMC5594987/",
+    "contrast.timing.threshold_hu": "https://academy.siemens-healthineers.com/en-us/management-of-scan-and-contrast-media-injection (relative threshold: a rise above baseline, as on CARE Bolus); 100 HU from https://pmc.ncbi.nlm.nih.gov/articles/PMC3265150/. The sheet says only that each scanner has a different HU trigger",
+    "contrast.timing.monitoring_delay_s": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8173674 (monitoring starts 10 s after injection start); the sheet gives no value",
+    "contrast.timing.monitoring_interval_s": "https://web.stanford.edu/~dominikf/CT-PROTOCOLS/Stanford_S64-CT-Protocols_version_2.04_DRAFT_small.pdf (1.2 s cycle time); the sheet gives no value",
+    "contrast.timing.max_monitoring_s": "assumed: 60 s maximum monitoring time chosen by the simulator design; no source gives a fallback rule",
+    "contrast.timing.post_trigger_delay_s": "assumed: 15 s from trigger to start of the arterial scan (15 to 30 s late arterial), https://radiopaedia.org/articles/94731",
+    "contrast.agent": "assumed: OMNI 350 on the sheet read as Omnipaque 350 (iohexol); the sheet does not spell it out",
+    "contrast.concentration_mgi_ml": "assumed: 350 mg iodine per mL read from the product name 'OMNI 350'",
+    "positioning.landmark_fraction_of_height": "assumed: landmark about 27 percent of stature below the vertex, near the xiphoid, for the pre-filled estimate; not in the sheet",
+    "series.noncontrast.default_start_mm": "assumed: generous box start 80 mm above the landmark so a stored box covers most patients",
+    "series.noncontrast.default_end_mm": "assumed: generous box end 320 mm below the landmark so a stored box covers most patients",
+    "series.arterial.default_start_mm": "assumed: generous box start 80 mm above the landmark so a stored box covers most patients",
+    "series.arterial.default_end_mm": "assumed: generous box end 320 mm below the landmark so a stored box covers most patients",
+    "series.venous.default_start_mm": "assumed: generous box start 80 mm above the landmark so a stored box covers most patients",
+    "series.venous.default_end_mm": "assumed: generous box end 320 mm below the landmark so a stored box covers most patients",
+    "series.delayed.default_start_mm": "assumed: generous box start 80 mm above the landmark so a stored box covers most patients",
+    "series.delayed.default_end_mm": "assumed: generous box end 320 mm below the landmark so a stored box covers most patients",
+    "series.recons.kernel": "assumed: Br40 soft-tissue kernel, https://www.aapm.org/pubs/CTProtocols/documents/Adult_Tri-phasic_Liver_HCC_AAPM_format_Clean.pdf",
+    "series.arterial.timing": "assumed: the arterial scan starts when the trigger fires plus the post-trigger delay; the sheet gives no value",
+    "scan_defaults.pitch": "assumed: pitch 0.8, https://www.aapm.org/pubs/CTProtocols/documents/Adult_Tri-phasic_Liver_HCC_AAPM_format_Clean.pdf",
+    "scan_defaults.rotation_s": "assumed: 0.5 s rotation, https://www.aapm.org/pubs/CTProtocols/documents/Adult_Tri-phasic_Liver_HCC_AAPM_format_Clean.pdf",
+    "scan_defaults.collimation_mm": "96 x 0.6 mm = 57.6 mm z-coverage, https://www.accessdata.fda.gov/cdrh_docs/pdf19/K190578.pdf; assumed here as the default collimation",
+    "scan_defaults.fov_mm": "assumed: 400 mm display field of view for an adult abdomen; the sheet gives none"
+  }
+}
